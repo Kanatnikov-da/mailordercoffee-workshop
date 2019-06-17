@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), HeaderFragment.OnHeaderSelected, MenuF
     }
 
     private fun isFirstLaunch(): Boolean {
-        return SharedPreferencesUtil.isFirstLaunch(applicationContext)
+        return false //SharedPreferencesUtil.isFirstLaunch(applicationContext)
     }
 
     private fun setUpCustomOrderFragment() {
