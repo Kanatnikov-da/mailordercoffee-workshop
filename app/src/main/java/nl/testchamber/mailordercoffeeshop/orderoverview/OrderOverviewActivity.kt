@@ -3,9 +3,9 @@ package nl.testchamber.mailordercoffeeshop.orderoverview
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import nl.testchamber.mailordercoffeeshop.R
@@ -33,9 +33,16 @@ class OrderOverviewActivity : AppCompatActivity() {
         if (orderOverviewViewModel.isValidOrder()) {
             nl.testchamber.mailordercoffeeshop.Utils.hideKeyboard(this)
             val order = Order(orderOverviewViewModel.getCustomerName(), orderOverviewViewModel.getEmail(), orderOverviewViewModel.getCustomOrderName(), orderOverviewViewModel.ingredients)
-            composeEmail(order)
-        } else {
-            showOrderErrors()
+            val intent = composeEmailIntent(order)
+            launchActivity(intent)
+            } else {
+                showOrderErrors()
+            }
+    }
+
+    private fun launchActivity(intent: Intent) {
+        if (intent.resolveActivity(this.packageManager) != null) {
+            startActivity(intent)
         }
     }
 
@@ -51,19 +58,24 @@ class OrderOverviewActivity : AppCompatActivity() {
         }
     }
 
-    private fun composeEmail(order: Order) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:") // only email apps should handle this
-            var addresses = mutableListOf("coffeeshop@valori.nl")
-            if (order.customerEmail.isNotEmpty()) addresses.add(order.customerEmail)
-            putExtra(Intent.EXTRA_EMAIL, addresses.toTypedArray())
-            putExtra(Intent.EXTRA_SUBJECT, "Order: ${order.customerName} - ${order.orderName}")
-            putExtra(Intent.EXTRA_TEXT, order.ingredients.joinToString("\n", prefix = "Ingredients:\n") { it.ingredientName })
+    private fun composeEmailIntent(order: Order): Intent {
+        val intent = Intent(this, nl.testchamber.mailordercoffeeshop.orderfinished.OrderFinishedActivity::class.java).apply {
+            putExtra(Order.PARCEL_NAME, order)
         }
-        if (intent.resolveActivity(this.packageManager) != null) {
-            startActivity(intent)
+
+
+
+//                Intent(Intent.ACTION_SENDTO).apply {
+//            data = Uri.parse("mailto:") // only email apps should handle this
+//            var addresses = mutableListOf("coffeeshop@valori.nl")
+//            if (order.customerEmail.isNotEmpty()) addresses.add(order.customerEmail)
+//            putExtra(Intent.EXTRA_EMAIL, addresses.toTypedArray())
+//            putExtra(Intent.EXTRA_SUBJECT, "Order: ${order.customerName} - ${order.orderName}")
+//            putExtra(Intent.EXTRA_TEXT, order.ingredients.joinToString("\n", prefix = "Ingredients:\n") { it.ingredientName })
+//        }
+        return intent
         }
-    }
+
 
     inner class Listeners {
         val submitOrderListener: View.OnClickListener

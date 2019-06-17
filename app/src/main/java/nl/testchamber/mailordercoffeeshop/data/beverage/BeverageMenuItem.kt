@@ -31,7 +31,7 @@ data class BeverageMenuItem(val name: String, val volume: Int, val ingredients: 
             return arrayOfNulls(size)
         }
 
-        val PARCEL_NAME = "beverageMenuItem"
+        const val PARCEL_NAME = "beverageMenuItem"
     }
 }
 

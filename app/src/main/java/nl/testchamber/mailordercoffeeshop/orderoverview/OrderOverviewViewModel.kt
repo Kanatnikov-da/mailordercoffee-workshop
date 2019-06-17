@@ -15,7 +15,7 @@ class OrderOverviewViewModel(beverageMenuItem: BeverageMenuItem) : ViewModel() {
 
     val calculatedVolume = ingredients.sumBy { it.volumeInML }
 
-    val beverageDetailIngredientsListing = ingredients.joinToString("\n", prefix = "Ingredients:\n") { it.ingredientName }
+    val beverageDetailIngredientsListing = ingredients.joinToString("\n", prefix = "Ingredients:\n") { it.ingredientName.trim() }
 
     val volumeText = "${calculatedVolume} ml."
 
