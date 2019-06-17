@@ -65,6 +65,7 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <Button
+                            android:id="@+id/more_espresso"
                             android:layout_width="88dp"
                             android:layout_height="48dp"
                             android:elevation="8dp"
@@ -77,10 +78,9 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/less_espresso"/>
+                            />
 
                         <Button
-                            android:id="@+id/less_espresso"
                             android:layout_width="88dp"
                             android:layout_height="48dp"
                             android:layout_marginTop="16dp"
@@ -93,7 +93,8 @@
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/more_espresso"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
