@@ -98,7 +98,7 @@ public class EspressoWorkshopTest extends BaseSteps {
         onView(withText("+")).perform(scrollTo(), click());
         onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
 
-        Assert.assertEquals("the ingredients are not specified correctly",
+        Assert.assertEquals("The ingredients are not specified correctly",
                 "Ingredients:\n1 shot of espresso\n "+ fatMilk +"% fat milk", getText(withId(R.id.beverage_detail_ingredients)));
     }
 

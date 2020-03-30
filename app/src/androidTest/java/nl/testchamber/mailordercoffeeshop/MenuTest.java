@@ -36,26 +36,26 @@ public class MenuTest extends BaseSteps {
             editor.putBoolean("is_first_launch", false);
             editor.commit();
         }
-
-        @Test
-        public void orderEspressoWithoutName() {
-            onView(withId(R.id.use_menu)).perform(click());
-            onView(withId(R.id.beverage_recycler_view))
-                    .perform(actionOnItem(hasDescendant(withText(MenuNames.ESPRESSO)), click()));
-            onView(withId(R.id.name_text_box)).perform(scrollTo(), typeText(""));
-            onView(withId(R.id.mail_order_button)).perform(click());
-            onView(withText("Enter your name please")).check(matches(isDisplayed()));
-        }
-
-        @Test
-        public void orderCappuccinoWithIncorrectEmail() {
-            onView(withId(R.id.use_menu)).perform(click());
-            onView(withId(R.id.beverage_recycler_view))
-                    .perform(actionOnItem(hasDescendant(withText(MenuNames.CAPPUCCINO)), click()));
-            onView(withId(R.id.name_text_box)).perform(scrollTo(), typeText("My name"));
-            onView(withId(R.id.email_text_box)).perform(scrollTo(), typeText(UUID.randomUUID().toString()));
-            onView(withId(R.id.mail_order_button)).perform(scrollTo(),click());
-            onView(withText("E-mail address is invalid")).check(matches(isDisplayed()));
-        }
     };
+
+    @Test
+    public void orderEspressoWithoutName() {
+        onView(withId(R.id.use_menu)).perform(click());
+        onView(withId(R.id.beverage_recycler_view))
+                .perform(actionOnItem(hasDescendant(withText(MenuNames.ESPRESSO)), click()));
+        onView(withId(R.id.name_text_box)).perform(scrollTo(), typeText(""));
+        onView(withId(R.id.mail_order_button)).perform(click());
+        onView(withText("Enter your name please")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void orderCappuccinoWithIncorrectEmail() {
+        onView(withId(R.id.use_menu)).perform(click());
+        onView(withId(R.id.beverage_recycler_view))
+                .perform(actionOnItem(hasDescendant(withText(MenuNames.CAPPUCCINO)), click()));
+        onView(withId(R.id.name_text_box)).perform(scrollTo(), typeText("My name"));
+        onView(withId(R.id.email_text_box)).perform(scrollTo(), typeText(UUID.randomUUID().toString()));
+        onView(withId(R.id.mail_order_button)).perform(scrollTo(),click());
+        onView(withText("E-mail address is invalid")).check(matches(isDisplayed()));
+    }
 }
