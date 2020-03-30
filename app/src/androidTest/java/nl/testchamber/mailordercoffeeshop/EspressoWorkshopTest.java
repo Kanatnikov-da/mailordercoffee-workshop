@@ -5,13 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import org.junit.Rule;
-import org.junit.Test;
-
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
+
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+
+import nl.testchamber.mailordercoffeeshop.model.TextMessage;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -21,13 +23,16 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.IsNot.not;
 
-public class EspressoWorkshopTest {
+public class EspressoWorkshopTest extends BaseSteps {
 
     @Rule
     public IntentsTestRule<MainActivity> activityTestRule = new IntentsTestRule<MainActivity>(MainActivity.class) {
@@ -79,4 +84,75 @@ public class EspressoWorkshopTest {
                 hasAction(equalTo(Intent.ACTION_SENDTO)),
                 hasExtra(Intent.EXTRA_SUBJECT, "Order: My name - Custom Order Name")));
     }
+
+    @Test
+    public void orderEspressoWithMilk() {
+        int fatMilk = (int)(Math.random() * 12) ;
+
+        onView(withId(R.id.milk_type)).perform(click());
+        onView(withText("Custom %")).perform(click());
+        onView(withId(R.id.simpleSeekBar)).perform(setProgress(fatMilk));
+        onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
+        onView(withText(TextMessage.MINIMUM_ESPRESSO_FOR_ORDER))
+                .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+        onView(withText("+")).perform(scrollTo(), click());
+        onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
+
+        Assert.assertEquals("The ingredients are not specified correctly",
+                "Ingredients:\n1 shot of espresso\n "+ fatMilk +"% fat milk", getText(withId(R.id.beverage_detail_ingredients)));
+    }
+
+    @Test
+    public void orderEspressoWithCottageCheese() {
+        int fatMilk = 13 + (int)(Math.random() * 17) ;
+
+        onView(withId(R.id.milk_type)).perform(click());
+        onView(withText("Custom %")).perform(click());
+        onView(withId(R.id.simpleSeekBar)).perform(setProgress(fatMilk));
+        onView(withText("+")).perform(scrollTo(), click());
+        onView(withId(R.id.beverage_temperature)).perform(click()).check(matches(isDisplayed()));
+        onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
+
+        Assert.assertEquals("The ingredients are not specified correctly",
+                "Ingredients:\n1 shot of cold espresso\n Cottage Cheese", getText(withId(R.id.beverage_detail_ingredients)));
+    }
+
+    @Test
+    public void orderManyShotsEspressoWithCheese() {
+        int fatMilk = 30 + (int)(Math.random() * 10) ;
+        int numberShot = 6;
+
+        onView(withId(R.id.milk_type)).perform(click());
+        onView(withText("Custom %")).perform(click());
+        onView(withId(R.id.simpleSeekBar)).perform(setProgress(fatMilk));
+        onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
+        clicker(onView(withText("+")), numberShot);
+        onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
+
+        Assert.assertEquals("The ingredients are not specified correctly",
+                "Ingredients:\n" + numberShot + " shots of espresso\n Cheese", getText(withId(R.id.beverage_detail_ingredients)));
+        Assert.assertEquals("The volume of the drink if non specified correctly",
+                numberShot*30 + 30 + " ml.", getText(withId(R.id.beverage_detail_volume_text)));
+    }
+
+    @Test
+    public void orderEspressoWithWhipped() {
+        onView(withText("+")).perform(click());
+        onView(withId(R.id.milk_type)).perform(click());
+        onView(withText("Soy")).perform(click());
+        onView(withId(R.id.Whipped)).perform(scrollTo(), click());
+        onView(withText(R.string.review_order_button)).perform(scrollTo(), click());
+
+        Assert.assertEquals("The ingredients are not specified correctly",
+                "Ingredients:\n1 shot of espresso\nWhipped Soy", getText(withId(R.id.beverage_detail_ingredients)));
+
+    }
+
+    @Test
+    public void checkLessThanZeroEspresso() {
+        onView(withText("-")).perform(click());
+        onView(withText(TextMessage.LESS_ZERO_ESPRESSO))
+                .inRoot(withDecorView(not(activityTestRule.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+    }
+
 }
