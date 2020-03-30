@@ -19,13 +19,13 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.RecyclerViewActions.*;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-public class MenuTest {
+public class MenuTest extends BaseSteps {
     @Rule
     public IntentsTestRule<MainActivity> activityTestRule = new IntentsTestRule<MainActivity>(MainActivity.class) {
         @Override
@@ -48,13 +48,13 @@ public class MenuTest {
         }
 
         @Test
-        public void orderCappuccinoWithoutIncorrectEmail() {
+        public void orderCappuccinoWithIncorrectEmail() {
             onView(withId(R.id.use_menu)).perform(click());
             onView(withId(R.id.beverage_recycler_view))
                     .perform(actionOnItem(hasDescendant(withText(MenuNames.CAPPUCCINO)), click()));
             onView(withId(R.id.name_text_box)).perform(scrollTo(), typeText("My name"));
-            onView(withId(R.id.custom_order_name_box)).perform(scrollTo(), typeText(UUID.randomUUID().toString()));
-            onView(withId(R.id.mail_order_button)).perform(click());
+            onView(withId(R.id.email_text_box)).perform(scrollTo(), typeText(UUID.randomUUID().toString()));
+            onView(withId(R.id.mail_order_button)).perform(scrollTo(),click());
             onView(withText("E-mail address is invalid")).check(matches(isDisplayed()));
         }
     };
